@@ -30,6 +30,12 @@ function removeListener(event,callback) {
 }
 
 function sendMessage(obj,method,message) {
+  if (typeof message == 'object') {
+    message = JSON.stringify(message);
+  } else if (typeof message != 'string') {
+    message = message.toString();
+  }
+
   RNUnityBridge.unitySendMessage(obj,method,message);
 }
 
