@@ -11,22 +11,43 @@ const {
   NativeEventEmitter,
   NativeModules,
 } = ReactNative;
-
 const { RNUnityBridge } = NativeModules;
 
 const g_eventEmitter = new EventEmitter();
-
 const g_unityEventEmitter = new NativeEventEmitter(RNUnityBridge);
+let g_unityAwake = false;
+let g_unityStarted = false;
 
 g_unityEventEmitter.addListener('UnityEvent',(e) => {
+  if (e.name == 'UnityAwake') {
+    g_unityAwake = true;
+  } else if (e.name == 'UnityStart') {
+    g_unityStarted = true;
+  }
   g_eventEmitter.emit(e.name,e.body);
 });
 
+RNUnityBridge.getUnityStatus((err,result) => {
+  if (!err && result) {
+    g_unityAwake = result.unityAwake;
+    g_unityStarted = result.unityStarted;
+    if (g_unityAwake) {
+      g_eventEmitter.emit('UnityAwake');
+    }
+    if (g_unityStarted) {
+      g_eventEmitter.emit('UnityStart');
+    }
+  }
+});
+
+function once(event,callback) {
+  g_eventEmitter.once(event,callback);
+}
 function on(event,callback) {
-  eventEmitter.on(event,callback);
+  g_eventEmitter.on(event,callback);
 }
 function removeListener(event,callback) {
-  eventEmitter.removeListener(event,callback);
+  g_eventEmitter.removeListener(event,callback);
 }
 
 function sendMessage(obj,method,message) {
@@ -41,6 +62,17 @@ function sendMessage(obj,method,message) {
 
 let g_cachedStringMap = {};
 let g_cachedDoubleMap = {};
+
+function clearValues(done) {
+  if (!done) {
+    done = function() {};
+  }
+  RNUnityBridge.clearValues((err) => {
+    g_cachedDoubleMap = {};
+    g_cachedStringMap = {};
+    done(err);
+  });
+}
 
 function fetchValues(done) {
   if (!done) {
@@ -79,12 +111,23 @@ function getCachedDouble(key,default_value) {
   return ret;
 }
 
+function isAwake() {
+  return g_unityAwake;
+}
+function isStarted() {
+  return g_unityStarted;
+}
+
 export default {
+  once,
   on,
   removeListener,
   sendMessage,
+  clearValues,
   fetchValues,
   setFetchInterval,
   getCachedString,
   getCachedDouble,
+  isAwake,
+  isStarted,
 };
