@@ -56,7 +56,7 @@ RCT_EXPORT_MODULE();
 }
 
 - (void)sendUnityEvent:(NSString *)name body:(NSString *)body {
-  if (_hasListeners) {
+  if (_hasListeners && super.bridge != nil) {
     [self sendEventWithName:@"UnityEvent" body:@{@"name": name, @"body": body}];
   }
 }
