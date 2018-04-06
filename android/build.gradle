@@ -28,9 +28,10 @@ android {
 
 repositories {
     mavenCentral()
+    flatDir { dirs "$rootDir/libs" }
 }
 
 dependencies {
+    compile name: 'unity-classes'
     compile 'com.facebook.react:react-native:+'
 }
-  

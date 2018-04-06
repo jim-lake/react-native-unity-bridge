@@ -1,6 +1,6 @@
 {
   "name": "react-native-unity-bridge",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "React Native Unity Bridge",
   "main": "index.js",
   "scripts": {
@@ -11,9 +11,6 @@
   ],
   "author": "Jim Lake",
   "license": "MIT",
-  "peerDependencies": {
-    "react-native": "^0.41.2"
-  },
   "dependencies": {
     "events": "^2.0.0"
   }

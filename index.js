@@ -4,10 +4,6 @@ import ReactNative from 'react-native';
 import EventEmitter from 'events';
 
 const {
-  StyleSheet,
-  Text,
-  View,
-  TouchableHighlight,
   NativeEventEmitter,
   NativeModules,
 } = ReactNative;
